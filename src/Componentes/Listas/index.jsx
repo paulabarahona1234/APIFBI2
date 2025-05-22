@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import Filtro from '../Filtro';
 import { useNavigate } from "react-router-dom";
+import { FaHeart, FaRegHeart } from "react-icons/fa"; // Íconos de corazón para favoritos
+import Filtro from '../Filtro';
 
 import './style.css';
 
-function Listas() {
+function Listas({ favoritos, setFavoritos }) {
     const [data, setData] = useState([]);
     const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
     const [busqueda, setBusqueda] = useState('');
@@ -39,6 +40,15 @@ function Listas() {
         setTipoSeleccionado(tipo);
     };
 
+    const toggleFavorito = (persona) => {
+        const esFavorito = favoritos.some(p => p.uid === persona.uid);
+        if (esFavorito) {
+            setFavoritos(favoritos.filter(p => p.uid !== persona.uid));
+        } else {
+            setFavoritos([...favoritos, { uid: persona.uid, nombre: persona.title }]);
+        }
+    };
+
     let resultados = data;
 
     if (busqueda.length >= 3 && isNaN(busqueda)) {
@@ -64,11 +74,10 @@ function Listas() {
             />
             <Filtro onTipoChange={handleTipoChange} />
             <section className='c-lista'>
-                {resultados.map((persona, index) => (
+                {resultados.map((persona) => (
                     <div 
                         className='c-lista-pokemon' 
-                        onClick={() => navigate(`/MostWanted/${persona.uid}`)}
-                        key={index}
+                        key={persona.uid}
                     >
                         <p>ID: {persona.uid}</p>
                         <img 
@@ -77,8 +86,16 @@ function Listas() {
                             width='auto' 
                             height='100' 
                             loading='lazy'
+                            onClick={() => navigate(`/Wanted/${persona.uid}`)}
+                            style={{cursor: 'pointer'}}
                         />
-                        <p>{persona.title}</p>
+                        <p onClick={() => navigate(`/Wanted/${persona.uid}`)} style={{cursor: 'pointer'}}>{persona.title}</p>
+                        <button 
+                            onClick={() => toggleFavorito(persona)} 
+                            aria-label="Agregar o quitar de favoritos"
+                        >
+                            {favoritos.some(p => p.uid === persona.uid) ? <FaHeart color="red"/> : <FaRegHeart />}
+                        </button>
                     </div>
                 ))}
             </section>

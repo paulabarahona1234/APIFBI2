@@ -8,6 +8,9 @@ import Listas from './Componentes/Listas'
 import Wanted from './Componentes/Wanted'
 import Usuarios from './Componentes/Usuarios'
 import Menu from './Componentes/Menu'
+import Login from './Componentes/Login';
+import Registro from './Componentes/Registro';
+
 
 import './App.css'
 
@@ -21,9 +24,12 @@ function App() {
         <Route path="/Aleatorios" element={<Aleatorios />} />
         <Route path="/Capturados" element={<Capturados />} />
         <Route path="/Favoritos" element={<Favoritos favoritos={favoritos} />} />
-        <Route path="/" element={<Listas />} />
+        <Route path="/" element={<Listas favoritos={favoritos} setFavoritos={setFavoritos} />} />
         <Route path="/Wanted/:id" element={<Wanted favoritos={favoritos} setFavoritos={setFavoritos} />} />
         <Route path="/Usuarios" element={<Usuarios />} />
+<Route path="/Login" element={<Login />} />
+<Route path="/Registro" element={<Registro />} />
+
       </Routes>
     </Router>
   )
