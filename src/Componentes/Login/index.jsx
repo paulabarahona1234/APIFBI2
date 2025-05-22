@@ -1,30 +1,44 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./style.css";
 
 function Login() {
-  const [user, setUser] = useState('');
-  const [pass, setPass] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const savedUser = localStorage.getItem('user');
-    const savedPass = localStorage.getItem('pass');
-
-    if (user === savedUser && pass === savedPass) {
-      localStorage.setItem('loggedIn', 'true');
-      navigate('/');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simular usuario registrado guardado en localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.username === username && storedUser.password === password) {
+      localStorage.setItem("loggedIn", "true");
+      navigate("/");  // Redirige a lista u otra ruta protegida
     } else {
-      alert('Usuario o contraseña incorrectos');
+      alert("Usuario o contraseña incorrectos");
     }
   };
 
   return (
     <div className="form-container">
-      <h2>Iniciar sesión</h2>
-      <input placeholder="Usuario" value={user} onChange={e => setUser(e.target.value)} />
-      <input placeholder="Contraseña" type="password" value={pass} onChange={e => setPass(e.target.value)} />
-      <button onClick={handleLogin}>Entrar</button>
+      <h2>Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <input 
+          type="text" 
+          placeholder="Usuario" 
+          value={username} 
+          onChange={(e) => setUsername(e.target.value)} 
+          required
+        />
+        <input 
+          type="password" 
+          placeholder="Contraseña" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          required
+        />
+        <button type="submit">Entrar</button>
+      </form>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useState } from 'react'
 
 import Aleatorios from './Componentes/Aleatorios'
@@ -8,32 +8,78 @@ import Listas from './Componentes/Listas'
 import Wanted from './Componentes/Wanted'
 import Usuarios from './Componentes/Usuarios'
 import Menu from './Componentes/Menu'
-import Login from './Componentes/Login';
-import Registro from './Componentes/Registro';
-
+import Login from './Componentes/Login'
+import Registro from './Componentes/Registro'
 
 import './App.css'
 
+// Componente para rutas protegidas
+function PrivateRoute({ children }) {
+  const loggedIn = localStorage.getItem('loggedIn') === 'true'
+  return loggedIn ? children : <Navigate to="/Login" />
+}
+
 function App() {
-  const [favoritos, setFavoritos] = useState([]);
+  const [favoritos, setFavoritos] = useState([])
 
   return (
     <Router>
       <Menu />
       <Routes>
-        <Route path="/Aleatorios" element={<Aleatorios />} />
-        <Route path="/Capturados" element={<Capturados />} />
-        <Route path="/Favoritos" element={<Favoritos favoritos={favoritos} />} />
-        <Route path="/" element={<Listas favoritos={favoritos} setFavoritos={setFavoritos} />} />
-        <Route path="/Wanted/:id" element={<Wanted favoritos={favoritos} setFavoritos={setFavoritos} />} />
-        <Route path="/Usuarios" element={<Usuarios />} />
-<Route path="/Login" element={<Login />} />
-<Route path="/Registro" element={<Registro />} />
-
+        <Route
+          path="/Aleatorios"
+          element={
+            <PrivateRoute>
+              <Aleatorios />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/Capturados"
+          element={
+            <PrivateRoute>
+              <Capturados />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/Favoritos"
+          element={
+            <PrivateRoute>
+              <Favoritos favoritos={favoritos} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Listas favoritos={favoritos} setFavoritos={setFavoritos} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/Wanted/:id"
+          element={
+            <PrivateRoute>
+              <Wanted favoritos={favoritos} setFavoritos={setFavoritos} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/Usuarios"
+          element={
+            <PrivateRoute>
+              <Usuarios />
+            </PrivateRoute>
+          }
+        />
+        {/* Rutas públicas */}
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Registro" element={<Registro />} />
       </Routes>
     </Router>
   )
 }
 
-export default App
-
+export default App;
